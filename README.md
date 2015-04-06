@@ -3,8 +3,7 @@
 though! Feature requests in form of issues are more than welcome :)
 
 ## Installation
-It's not even a Gem right now. I've never published a Gem before so I'll have to 
-take a look at it. Dependencies are quite straightforward.
+Add `gem 'switchboard', github: 'ostera/switchboard.rb'` to your `Gemfile`.
 
 ## Usage
 A code snippet speaks for a thousand words
