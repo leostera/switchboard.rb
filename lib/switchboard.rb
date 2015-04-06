@@ -6,19 +6,19 @@ module Switchboard
 
   class Worker
     def initialize params={}
-      params[:url] ||= "192.168.50.2:8080"
-      @url = "ws://#{params[:url]}/workers"
-      @ws = Faye::WebSocket::Client.new(@url)
+      params[:host] ||= "192.168.50.2:8080"
+      @uri = "ws://#{params[:host]}/workers"
+      @ws = Faye::WebSocket::Client.new(@uri)
       @callbacks = []
       listen
     end
 
     def open
-      p [:ws, :connected, @url] 
+      p [:ws, :connected, @uri] 
     end
 
     def close
-      p [:ws, :disconnected, @url] 
+      p [:ws, :disconnected, @uri] 
       @ws.close if @ws
       @ws = nil
     end
@@ -57,6 +57,7 @@ module Switchboard
 
     def listen
       @ws.on :open do |event| open end
+      #@todo: retry connection
       @ws.on :close do |event| close end
       @ws.on :message do |event| dispatch JSON.parse(event.data).flatten! end
     end
