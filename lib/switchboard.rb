@@ -68,19 +68,16 @@ module Switchboard
 
       case type 
       when 'newMessage'
-        # if a new message arrives, request it's details
         send_cmd "getMessages", {
           account: body["account"],
           ids: [body["messageId"]],
           properties: ["raw"]
         } if not @callbacks.empty?
       when 'messages'
-        # if message details arrive, push to device
         state = body["state"] 
+        #@todo: send all messages to all the callbacks
+        #@todo: map messages raw content with Mail objects
         if state == "TODO"
-          # messages will always return an array
-          # but we're asking for just one id, so we care
-          # about the first one only
           raw = body["list"][0]["raw"]
           email = Mail.new(raw)
           to = if email[:delivered_to].is_a? Array
