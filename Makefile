@@ -5,6 +5,6 @@ publish:
 	gem push ./switchboard-*-.gem
 
 clean:
-	rm ./switchboard-*-.gem
+	rm *.gem
 
 .PHONY: publish
