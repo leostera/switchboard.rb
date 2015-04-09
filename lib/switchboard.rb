@@ -41,13 +41,13 @@ module Switchboard
     def add_account type, account
       case type
       when :plain
-        add_account(
+        _add_account(
           type: "plain",
           username: account[:email],
           password: account[:password]
         )
       when :oauth2
-        add_account(
+        _add_account(
           type: "xoauth2",
           username: account[:email],
           token: {
@@ -57,13 +57,13 @@ module Switchboard
           }
         )
       else
-        throw "Type must be :simple or :oauth"
+        throw "Type must be :plain or :oauth2"
       end
     end
 
     private
 
-    def add_account account
+    def _add_account account
       send_cmd "connect", {
         host: "imap.gmail.com",
         port: 993,
