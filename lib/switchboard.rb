@@ -61,6 +61,8 @@ module Switchboard
       end
     end
 
+    private
+
     def add_account account
       send_cmd "connect", {
         host: "imap.gmail.com",
