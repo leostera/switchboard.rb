@@ -42,7 +42,7 @@ module Switchboard
       case type
       when :simple
         add_acount(
-          type: "simple",
+          type: "plain",
           username: account[:email],
           password: account[:password]
         )
