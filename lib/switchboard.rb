@@ -38,11 +38,16 @@ module Switchboard
       }
     end
 
-    def add_account account
-      send_cmd "connect", {
-        host: "imap.gmail.com",
-        port: 993,
-        auth: {
+    def add_account type, account
+      case type
+      when :simple
+        add_acount(
+          type: "simple",
+          username: account[:email],
+          password: account[:password]
+        )
+      when :oauth
+        add_account(
           type: "xoauth2",
           username: account[:email],
           token: {
@@ -50,7 +55,18 @@ module Switchboard
             token: account[:token], 
             provider: account[:provider] 
           }
-        }}
+        )
+      else
+        raise "Type must be :simple or :oauth"
+      end
+    end
+
+    def add_account account
+      send_cmd "connect", {
+        host: "imap.gmail.com",
+        port: 993,
+        auth: account
+      }
     end
 
     private
