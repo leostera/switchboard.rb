@@ -40,13 +40,13 @@ module Switchboard
 
     def add_account type, account
       case type
-      when :simple
-        add_acount(
+      when :plain
+        add_account(
           type: "plain",
           username: account[:email],
           password: account[:password]
         )
-      when :oauth
+      when :oauth2
         add_account(
           type: "xoauth2",
           username: account[:email],
@@ -57,7 +57,7 @@ module Switchboard
           }
         )
       else
-        raise "Type must be :simple or :oauth"
+        throw "Type must be :simple or :oauth"
       end
     end
 
@@ -68,8 +68,6 @@ module Switchboard
         auth: account
       }
     end
-
-    private
 
     def listen
       @ws.on :open do |event| open end
