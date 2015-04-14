@@ -120,7 +120,7 @@ module Switchboard
 
     def send_cmd cmd, params={}
       p [:send, cmd, params]  
-      @ws.send make_cmd cmd, params
+      @ws.send(make_cmd cmd, params) if @ws
     end
 
     def make_cmd cmd, params
