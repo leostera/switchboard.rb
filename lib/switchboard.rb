@@ -6,8 +6,13 @@ module Switchboard
 
   class Worker
     def initialize params={}
-      params[:host] ||= "192.168.50.2:8080"
-      @uri = "ws://#{params[:host]}/workers"
+      if params[:uri]
+        @uri = params[:uri]
+      else
+        params[:host] ||= "192.168.50.2:8080"
+        @uri = "ws://#{params[:host]}/workers"
+      end
+      
       @ws = Faye::WebSocket::Client.new(@uri)
       @callbacks = []
       listen
