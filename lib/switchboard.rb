@@ -9,10 +9,12 @@ module Switchboard
       if params[:uri]
         @uri = params[:uri]
       else
-        params[:host] ||= "192.168.50.2:8080"
-        @uri = "ws://#{params[:host]}/workers"
+        params[:host] ||= "192.168.50.2"
+        params[:port] ||= "8080"
+        @uri = "ws://#{params[:host]}:#{params[:port]}/workers"
       end
       
+      #@todo: begin/rescue/retry here?
       @ws = Faye::WebSocket::Client.new(@uri)
       @callbacks = []
       listen
