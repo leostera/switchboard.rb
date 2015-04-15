@@ -140,10 +140,15 @@ module Switchboard
                else
                  email[:delivered_to]
                end.to_s
+          subject = if email.subject
+                      email.subject[0...200]
+                    else
+                      "No subject"
+                    end
 
            message = {
              to: to,
-             message: email.subject[0...200]
+             message: subject
            }
 
            @callbacks[:on_mail].each do |cb| cb.call(message) end
