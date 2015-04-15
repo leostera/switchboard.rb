@@ -110,7 +110,9 @@ module Switchboard
       end
 
       @ws.on :message do |event|
-        dispatch JSON.parse(event.data).flatten!
+        if event and event.data
+          dispatch JSON.parse(event.data).flatten!
+        end
       end
     end
 
