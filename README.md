@@ -12,17 +12,28 @@ A code snippet speaks for a thousand words
 # Create a worker
 switchboard = Switchboard::Worker.new
 
-# Register a callback
+# Register an open callback
+switchboard.on_open do
+  p [:open, "Connection opened"]
+end
+
+# Register a message callback
 switchboard.on_mail do |message|
   p [:message, message]
 end
 
-# Connect an account
-switchboard.add_account({
+# Connect an oauth account
+switchboard.add_account(:oauth2, {
   email: 'your@email.com',
   token: 'yourToken',
   token_type: 'refresh' #or 'access',
   provider: 'google' #or others
+})
+
+# Connect a plain account
+switchboard.add_account(:simple, {
+  email: 'email@your.com',
+  password: 'yourpassword'
 })
 
 # Watch a single account
