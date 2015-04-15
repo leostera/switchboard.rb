@@ -17,7 +17,8 @@ module Switchboard
       @retry = params[:retry] || 1
       @callbacks = {
         on_mail: [],
-        on_connect: []
+        on_open: [],
+        on_close: []
       }
       @ws = nil
       connect
@@ -25,6 +26,7 @@ module Switchboard
 
     def open
       p [:ws, :connected, @uri] 
+      @callbacks[:on_open].each do |cb| cb.call(self) end
     end
 
     def close event
@@ -37,8 +39,8 @@ module Switchboard
       @callbacks[:on_mail] << block
     end
 
-    def on_connect &block
-      @callbacks[:on_connect] << block
+    def on_open &block
+      @callbacks[:on_open] << block
     end
 
     def watch_all
@@ -80,7 +82,6 @@ module Switchboard
     def connect
       @ws = Faye::WebSocket::Client.new(@uri)
       listen
-      @callbacks[:on_connect].each do |cb| cb.call(self) end
     end
 
     def reconnect
@@ -99,12 +100,18 @@ module Switchboard
     end
 
     def listen
-      @ws.on :open do |event| open end
+      @ws.on :open do |event|
+        open
+      end
+
       @ws.on :close do |event|
         close event
         reconnect
       end
-      @ws.on :message do |event| dispatch JSON.parse(event.data).flatten! end
+
+      @ws.on :message do |event|
+        dispatch JSON.parse(event.data).flatten!
+      end
     end
 
     def dispatch payload
