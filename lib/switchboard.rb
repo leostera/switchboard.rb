@@ -15,17 +15,17 @@ module Switchboard
       end
       
       #@todo: begin/rescue/retry here?
-      @ws = Faye::WebSocket::Client.new(@uri)
       @callbacks = []
-      listen
+      @ws = nil
+      connect
     end
 
     def open
       p [:ws, :connected, @uri] 
     end
 
-    def close
-      p [:ws, :disconnected, @uri] 
+    def close event
+      p [:ws, :disconnected, @uri, event.code, event.reason]
       @ws.close if @ws
       @ws = nil
     end
@@ -70,6 +70,11 @@ module Switchboard
 
     private
 
+    def connect
+      @ws = Faye::WebSocket::Client.new(@uri)
+      listen
+    end
+
     def _add_account account
       send_cmd "connect", {
         host: "imap.gmail.com",
@@ -80,8 +85,10 @@ module Switchboard
 
     def listen
       @ws.on :open do |event| open end
-      #@todo: retry connection
-      @ws.on :close do |event| close end
+      @ws.on :close do |event|
+        close event
+        connect
+      end
       @ws.on :message do |event| dispatch JSON.parse(event.data).flatten! end
     end
 
