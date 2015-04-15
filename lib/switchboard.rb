@@ -139,7 +139,7 @@ module Switchboard
                  email[:delivered_to][0]
                else
                  email[:delivered_to]
-               end.value
+               end.to_s
 
            message = {
              to: to,
