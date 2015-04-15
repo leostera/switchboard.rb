@@ -15,7 +15,10 @@ module Switchboard
       end
       
       @retry = params[:retry] || 1
-      @callbacks = []
+      @callbacks = {
+        on_mail: [],
+        on_connect: []
+      }
       @ws = nil
       connect
     end
@@ -31,7 +34,11 @@ module Switchboard
     end
 
     def on_mail &block
-      @callbacks << block
+      @callbacks[:on_mail] << block
+    end
+
+    def on_connect &block
+      @callbacks[:on_connect] << block
     end
 
     def watch_all
@@ -73,6 +80,7 @@ module Switchboard
     def connect
       @ws = Faye::WebSocket::Client.new(@uri)
       listen
+      @callbacks[:on_connect].each do |cb| cb.call(self) end
     end
 
     def reconnect
@@ -110,7 +118,7 @@ module Switchboard
           account: body["account"],
           ids: [body["messageId"]],
           properties: ["raw"]
-        } if not @callbacks.empty?
+        } if not @callbacks[:on_mail].empty?
       when 'messages'
         state = body["state"] 
         #@todo: send all messages to all the callbacks
@@ -129,7 +137,7 @@ module Switchboard
              message: email.subject[0...200]
            }
 
-           @callbacks.each do |cb| cb.call(message) end
+           @callbacks[:on_mail].each do |cb| cb.call(message) end
         end
       end
     end
