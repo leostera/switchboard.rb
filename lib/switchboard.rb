@@ -14,7 +14,7 @@ module Switchboard
         @uri = "ws://#{params[:host]}:#{params[:port]}/workers"
       end
       
-      #@todo: begin/rescue/retry here?
+      @retry = params[:retry] || 1
       @callbacks = []
       @ws = nil
       connect
@@ -75,6 +75,13 @@ module Switchboard
       listen
     end
 
+    def reconnect
+      if @retry > 0
+        sleep @retry
+        connect
+      end
+    end
+
     def _add_account account
       send_cmd "connect", {
         host: "imap.gmail.com",
@@ -87,7 +94,7 @@ module Switchboard
       @ws.on :open do |event| open end
       @ws.on :close do |event|
         close event
-        connect
+        reconnect
       end
       @ws.on :message do |event| dispatch JSON.parse(event.data).flatten! end
     end
