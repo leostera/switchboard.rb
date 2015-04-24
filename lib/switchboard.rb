@@ -130,28 +130,11 @@ module Switchboard
         } if not @callbacks[:on_mail].empty?
       when 'messages'
         state = body["state"] 
-        #@todo: send all messages to all the callbacks
-        #@todo: map messages raw content with Mail objects
         if state == "TODO"
-          raw = body["list"][0]["raw"]
-          email = Mail.new(raw)
-          to = if email[:delivered_to].is_a? Array
-                 email[:delivered_to][0]
-               else
-                 email[:delivered_to]
-               end.to_s
-          subject = if email.subject
-                      email.subject[0...200]
-                    else
-                      "No subject"
-                    end
-
-           message = {
-             to: to,
-             message: subject
-           }
-
-           @callbacks[:on_mail].each do |cb| cb.call(message) end
+          messages = body["list"].map do |message|
+            Mail.new(message['raw'])
+          end
+          @callbacks[:on_mail].each do |cb| cb.call(messages) end
         end
       end
     end
