@@ -122,7 +122,10 @@ module Switchboard
 
       preview = body.map do |k, v|
         if k == "list"
-          v.map! do |m| m["raw"] = "OMITTED" end
+          v.map! do |m|
+            m["raw"] = "OMITTED"
+            m
+          end
         end
         v
       end
