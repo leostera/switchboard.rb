@@ -122,12 +122,13 @@ module Switchboard
 
       preview = body.map do |k, v|
         if k == "list"
-          v.map! do |m|
-            m["raw"] = "OMITTED"
+          v.map do |m|
+            m["raw"] = "OMITTED" if m["raw"]
             m
           end
+        else
+          v
         end
-        v
       end
       p [:dispatch, type, preview]
 

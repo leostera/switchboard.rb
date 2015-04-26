@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'switchboard'
-  s.version     = '0.2.3'
+  s.version     = '0.2.4'
   s.date        = '2015-04-06'
   s.summary     = "Switchboard Ruby Wrapper"
   s.description = "A ruby wrapper to talk to Switchboard"
