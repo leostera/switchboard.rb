@@ -119,7 +119,11 @@ module Switchboard
     def dispatch payload
       type = payload[0]
       body = payload[1]
-      p [:dispatch, type, body]
+
+      # Don't log the messages
+      preview = body
+      preview["list"] = []
+      p [:dispatch, type, preview]
 
       case type 
       when 'newMessage'
