@@ -120,7 +120,7 @@ module Switchboard
       type = payload[0]
       body = payload[1]
 
-      preview = body.map do |k, v|
+      preview = Array.new(body).map do |k, v|
         if k == "list"
           v.map do |m|
             m["raw"] = "OMITTED" if m["raw"]
