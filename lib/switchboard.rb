@@ -120,9 +120,12 @@ module Switchboard
       type = payload[0]
       body = payload[1]
 
-      # Don't log the messages
-      preview = body
-      preview["list"] = []
+      preview = body.map do |k, v|
+        if k == "list"
+          v.map! do |m| m["raw"] = "OMITTED" end
+        end
+        v
+      end
       p [:dispatch, type, preview]
 
       case type 
