@@ -133,7 +133,10 @@ module Switchboard
         state = body["state"] 
         if state == "TODO"
           messages = body["list"].map do |message|
-            Mail.new(message['raw'])
+            {
+              state: message["state"],
+              mail: Mail.new(message['raw'])
+            }
           end
           @callbacks[:on_mail].each do |cb| cb.call(messages) end
         end
