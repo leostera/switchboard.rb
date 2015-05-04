@@ -132,9 +132,7 @@ module Switchboard
       when 'messages'
         state = body["state"] 
         messages = body["list"].map do |message|
-          {
-            mail: Mail.new(message['raw'])
-          }
+          Mail.new(message['raw'])
         end
         @callbacks[:on_mail].each do |cb| cb.call(state, messages) end
       end
