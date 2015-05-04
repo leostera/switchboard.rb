@@ -131,15 +131,12 @@ module Switchboard
         } if not @callbacks[:on_mail].empty?
       when 'messages'
         state = body["state"] 
-        if state == "TODO"
-          messages = body["list"].map do |message|
-            {
-              state: message["state"],
-              mail: Mail.new(message['raw'])
-            }
-          end
-          @callbacks[:on_mail].each do |cb| cb.call(messages) end
+        messages = body["list"].map do |message|
+          {
+            mail: Mail.new(message['raw'])
+          }
         end
+        @callbacks[:on_mail].each do |cb| cb.call(state, messages) end
       end
     end
 
